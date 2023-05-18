@@ -44,6 +44,7 @@ public class DataLayer {
 			}
 
 			os.close();
+			
 
 		} catch (Exception e) {
 			System.out.println(e);
@@ -65,6 +66,22 @@ public class DataLayer {
 		}
 
 	}
+	public static void addPhoto(Photo photo) {
+		try {
+			FileOutputStream fos=new FileOutputStream(imagesFilePath);
+			ObjectOutputStream oos=new ObjectOutputStream(fos);
+			String nickname = photo.getOwner().getNickname();
+			List<Photo> photoList=photos.get(nickname);
+			photoList.add(photo);
+			oos.writeObject(photos);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	public static void addUser(User user) {
 		try (ObjectOutputStream outputStream = new ObjectOutputStream(
@@ -76,6 +93,27 @@ public class DataLayer {
 			users.remove(user.getNickname());
 		}
 	}
+	/*public static void saveUserData(String nickname) {
+		//HashMap<String, User> users = DataLayer.getUsers();
+		try (ObjectOutputStream outputStream = new ObjectOutputStream(
+				new FileOutputStream("resources/user_data.txt"))) {
+			outputStream.writeObject(users);
+		} catch (IOException e) {
+			System.err.println("Failed to save user data: " + e.getMessage());
+		}
+	}
+	
+	
+	public static void savePhotoData(String nickname) {
+		//HashMap<String, User> users = DataLayer.getUsers();
+		try (ObjectOutputStream outputStream = new ObjectOutputStream(
+				new FileOutputStream("resources/images_data.txt"))) {
+			outputStream.writeObject(photos);
+		} catch (IOException e) {
+			System.err.println("Failed to save photo data: " + e.getMessage());
+		}
+	}*/
+	
 
 	public static HashMap<String, User> getUsers() {
 		return users;
@@ -96,32 +134,42 @@ public class DataLayer {
 		DataLayer.currentuser = user;
 	}
 
-	public static void saveUserData(String nickname) {
-		HashMap<String, User> users = DataLayer.getUsers();
-		try (ObjectOutputStream outputStream = new ObjectOutputStream(
-				new FileOutputStream("resources/user_data.txt"))) {
-			outputStream.writeObject(users);
-		} catch (IOException e) {
-			System.err.println("Failed to save user data: " + e.getMessage());
-		}
+	
+	
+	
+
+	public static HashMap<String, List<Photo>> getPhotos() {
+		return photos;
+	}
+
+	public static void setPhotos(HashMap<String, List<Photo>> photos) {
+		DataLayer.photos = photos;
+	}
+
+	public static String getUSER_DATA_FILE() {
+		return USER_DATA_FILE;
+	}
+
+	public static void setUSER_DATA_FILE(String uSER_DATA_FILE) {
+		USER_DATA_FILE = uSER_DATA_FILE;
+	}
+
+	public static String getImagesFilePath() {
+		return imagesFilePath;
+	}
+
+	public static void setImagesFilePath(String imagesFilePath) {
+		DataLayer.imagesFilePath = imagesFilePath;
+	}
+
+	public static Logger getLogger() {
+		return logger;
+	}
+
+	public static void setCurrentuser(User currentuser) {
+		DataLayer.currentuser = currentuser;
 	}
 	
-	public static void addPhoto(Photo photo) {
-		try {
-			FileOutputStream fos=new FileOutputStream(imagesFilePath);
-			ObjectOutputStream oos=new ObjectOutputStream(fos);
-			String nickname = photo.getOwner().getNickname();
-			List<Photo> photoList=photos.get(nickname);
-			photoList.add(photo);
-			oos.writeObject(photos);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 /*
 	// SAVE USER PHOTO CLASS WITH IT'S KEY TO IMAGES.TXT
 	public static void saveUserPhoto(Photo photo, String key) {

@@ -6,15 +6,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import gui.SignupPage;
+import models.DataLayer;
+import models.User;
 import gui.ProfilePage;
 import gui.LoginPage;
 
 
 public class Navigation  extends JFrame {
+	private User currentUser= DataLayer.getCurrentuser();
     private JPanel cardPanel;
     private CardLayout cardLayout;
 
     public Navigation() {
+    		
         JFrame frame = new JFrame("Navigation Example");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -35,13 +39,13 @@ public class Navigation  extends JFrame {
         // Show the signupPage panel by default
         cardLayout.show(cardPanel, "signup");
 
-        ProfilePage profilePage = new ProfilePage("bilcospher");
-        cardPanel.add(profilePage, "profile");
+        //ProfilePage profilePage = new ProfilePage(currentUser.getNickname());
+        //cardPanel.add(profilePage, "profile");
         cardLayout.show(cardPanel, "profile");
         
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(cardPanel, BorderLayout.CENTER);
-        frame.setSize(414, 780);
+        frame.setSize(800, 780);
         frame.setVisible(true);
        
     }
@@ -58,8 +62,9 @@ public class Navigation  extends JFrame {
     public void navigateToLoginPage() {
         cardLayout.show(cardPanel, "login");
     }
+    
     public void navigateToProfilePage() {
-        ProfilePage profilePage = new ProfilePage("ilgim");
+        ProfilePage profilePage = new ProfilePage(DataLayer.getCurrentuser().getNickname());
         cardPanel.add(profilePage, "profile");
         cardLayout.show(cardPanel, "profile");
     }

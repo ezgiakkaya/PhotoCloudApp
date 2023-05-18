@@ -16,15 +16,25 @@ import java.util.List;
 import models.DataLayer;
 import models.User;
 import java.util.HashMap;
+/*
+ * showupluoadedphotos guncellenecek
+ * ilk girişte fotomuz olmucagı için profilpagede altta discover,upload photo diye iki buton olmasını planladım?
+ * upload ettikten sonra bence photogrid oluşturulsun bilemedim bu  nokatyı suan
+ * signupta addprofilephoto da olsun filechooserla ekleriz? emin değlim
+ * profil fotosu da borderlayout.north filan deriz yukarda durur
+ * 
+ */
 
 public class ProfilePage extends JPanel {
-	private String userNickname; // User's nickname
+	
+	private User user = DataLayer.getCurrentuser();
+	private String userNickname = user.getNickname(); // User's nickname
 
-	public ProfilePage(String nickname) {
-		DataLayer.setCurrentuser(nickname);
-		User user = DataLayer.getCurrentuser();
-		String userNickname = user.getNickname();
-		getUploadedPhotos(userNickname);
+	public ProfilePage(String userNickname) {
+		DataLayer.setCurrentuser(userNickname);
+		//User user = DataLayer.getCurrentuser();
+		//String userNickname = user.getNickname();*/
+		//getUploadedPhotos(userNickname);//if there is any??
 		this.userNickname = userNickname;
 
 		// Create a panel to display the user's information and posts
@@ -36,8 +46,10 @@ public class ProfilePage extends JPanel {
 		panel.add(infoLabel, BorderLayout.NORTH);
 
 		// Create a text area to display the user's information
-		JTextArea infoTextArea = new JTextArea(getUserInfo(userNickname));
+		JTextArea infoTextArea = new JTextArea(getUserInfo(user));
 		infoTextArea.setEditable(false);
+		infoTextArea.setBackground(Color.PINK); // Set the background color to pink
+	    infoTextArea.setPreferredSize(new Dimension(600, 600)); // S
 		JScrollPane infoScrollPane = new JScrollPane(infoTextArea);
 		panel.add(infoScrollPane, BorderLayout.CENTER);
 
@@ -62,7 +74,7 @@ public class ProfilePage extends JPanel {
 
 	}
 
-	private List<Photo> getUploadedPhotos(String userNickname) {
+	/*private List<Photo> getUploadedPhotos(String userNickname) {
 		List<Photo> uploadedPhotos = new ArrayList<>();
 		String filePath = "resources/images_data.txt";
 
@@ -77,7 +89,21 @@ public class ProfilePage extends JPanel {
 		}
 
 		return uploadedPhotos;
-	}
+	}*/
+	
+	
+	  private List<Photo> getUploadedPhotos(String userNickname) {
+    List<Photo> uploadedPhotos = new ArrayList<>();
+    HashMap<String, List<Photo>> photos = DataLayer.getPhotos();
+
+    if (photos != null) {
+        uploadedPhotos = photos.getOrDefault(userNickname, new ArrayList<>());
+    }
+
+    return uploadedPhotos;
+}
+	 
+	
 
 	private void showUploadedPhotos(String userNickname, JPanel panel) {
 		List<Photo> uploadedPhotos = getUploadedPhotos(userNickname);
@@ -103,12 +129,12 @@ public class ProfilePage extends JPanel {
 		panel.repaint();
 	}
 
-	private String getUserInfo(String userNickname) {
+	private String getUserInfo(User user) {
 		// Logic to retrieve and format the user's information
 		// Replace this with actual data retrieval and formatting based on the provided
 		// userNickname
-		return "User Information:\n" + "Nickname: " + userNickname + "\n" + "Name: John\n" + "Surname: Doe\n"
-				+ "Age: 30\n" + "Email: john.doe@example.com";
+		return "User Information:\n" + "Nickname: " + userNickname + "\n" + "Name:"+ user.getRealName() +"\n"+ "Surname: " + user.getSurname()+
+				"\n"+ "Age: "+ user.getAge() + "\n"+ "Email: "+user.getEmail();
 	}
 
 //	public static void main(String[] args) {

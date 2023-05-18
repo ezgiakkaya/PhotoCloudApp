@@ -46,7 +46,9 @@ public class LoginPage extends JPanel {
 
 				if (loginSuccessful) {
 					// Navigate to the user's profile page or Discover page
-					navigateToProfilePage(nickname);
+					//navigateToProfilePage(nickname);
+					DataLayer.setCurrentuser(nickname);
+					navigation.navigateToProfilePage();
 					
 				} else {
 					// Display an error message
@@ -90,8 +92,10 @@ public class LoginPage extends JPanel {
 		try {
 			User user = users.get(nickname);
 			if (user.getPassword().equals(password)) {
-				System.out.println(user);
+				System.out.println(user+"logged in");
+				//when a succesful login happens, currentuser is set to logged user
 				DataLayer.setCurrentuser(nickname);
+				
 				return true;
 			}
 		} catch (Exception e) {

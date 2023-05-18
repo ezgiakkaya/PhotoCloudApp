@@ -112,7 +112,7 @@ public class SignupPage extends JPanel {
 				throw new IllegalArgumentException("Please fill in all the required fields.");
 			}
 
-			// Create a new User object
+			// Create a new User object and saves it 
 			if(!users.containsKey(nickname)) {
 				User user=new User(nickname, password,name,surname,age,email);
 				DataLayer.addUser(user);
@@ -120,7 +120,7 @@ public class SignupPage extends JPanel {
 				throw new IllegalArgumentException("User already exists!");
 			}
 			//DataLayer.setCurrentuser(nickname);
-			navigation.navigateToProfilePage();
+			//navigation.navigateToProfilePage();
 
 			return true;
 
