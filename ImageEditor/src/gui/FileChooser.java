@@ -71,7 +71,7 @@ public class FileChooser extends JFrame {
 						// StandardCopyOption.REPLACE_EXISTING);
 						JOptionPane.showMessageDialog(FileChooser.this, "File copied successfully.");
 						Photo photo = new Photo(currentUser);
-						DataLayer.saveUserPhoto(photo, "0");
+						DataLayer.addPhoto(photo);
 					} catch (IOException ex) {
 						JOptionPane.showMessageDialog(FileChooser.this, "Failed to copy file: " + ex.getMessage());
 					}

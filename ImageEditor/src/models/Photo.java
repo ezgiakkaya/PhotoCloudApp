@@ -19,6 +19,10 @@ public class Photo implements Serializable {
 	//private static int id = 0;
 	//private String extension;
 
+	
+	//File imagesDirectory = new File("data/" + user.getNickname() + "/images/");
+    //File[] photoDirectories = imagesDirectory.listFiles();
+	
 	public Photo(User owner, ImageMatrix image, boolean isPrivate, int likes, String name) {
 		this.owner = owner;
 		this.image = image;
@@ -127,4 +131,26 @@ public class Photo implements Serializable {
 		this.isPrivate = isPrivate;
 	}
 
+	
+	/*
+	 * import java.io.File;
+
+public class FileExample {
+    public static void main(String[] args) {
+        String folderPath = "path/to/folder";
+        
+        File folder = new File(folderPath);
+        File[] files = folder.listFiles();
+        
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    String fileName = file.getName();
+                    System.out.println("File Name: " + fileName);
+                }
+            }
+        }
+    }
+}
+	 */
 }

@@ -47,6 +47,7 @@ public class LoginPage extends JPanel {
 				if (loginSuccessful) {
 					// Navigate to the user's profile page or Discover page
 					navigateToProfilePage(nickname);
+					
 				} else {
 					// Display an error message
 					JOptionPane.showMessageDialog(LoginPage.this, "Invalid nickname or password");

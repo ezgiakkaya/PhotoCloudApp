@@ -1,11 +1,13 @@
 package gui;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import models.Photo;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -13,12 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 import models.DataLayer;
 import models.User;
+import java.util.HashMap;
 
 public class ProfilePage extends JPanel {
 	private String userNickname; // User's nickname
 
 	public ProfilePage(String nickname) {
-		DataLayer.setCurrentuser("ilgim");
+		DataLayer.setCurrentuser(nickname);
 		User user = DataLayer.getCurrentuser();
 		String userNickname = user.getNickname();
 		getUploadedPhotos(userNickname);
@@ -50,21 +53,29 @@ public class ProfilePage extends JPanel {
 			}
 		});
 		panel.add(modifyButton, BorderLayout.SOUTH);
+
+		JPanel photoPanel = new JPanel();
+		showUploadedPhotos(userNickname, photoPanel);
+		panel.add(photoPanel, BorderLayout.SOUTH);
+
 		setVisible(true);
 
 	}
 
 	private List<Photo> getUploadedPhotos(String userNickname) {
 		List<Photo> uploadedPhotos = new ArrayList<>();
-		String filePath = "resources/" + userNickname + "/images.txt";
-		// File folder = new File(filePath);
-		// File[] files = folder.listFiles();
-		try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filePath))) {
-			uploadedPhotos = (List<Photo>) inputStream.readObject();
+		String filePath = "resources/images_data.txt";
 
+		try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filePath))) {
+			HashMap<String, List<Photo>> photos = (HashMap<String, List<Photo>>) inputStream.readObject();
+
+			if (photos != null) {
+				uploadedPhotos = photos.get(userNickname);
+			}
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+
 		return uploadedPhotos;
 	}
 
@@ -77,14 +88,19 @@ public class ProfilePage extends JPanel {
 		panel.setLayout(layout);
 
 		for (Photo photo : uploadedPhotos) {
-			//BufferedImage image = ImageIO.read(new File("resources/" + userNickname + "/images/" + photo.getName() + photo.getExtension()));
-			ImageIcon icon = new ImageIcon("resources/" + userNickname + "/images/" + photo.getName() );
-			JLabel photoLabel = new JLabel(icon);
-			panel.add(photoLabel);
+			try {
+				String imagePath = "resources/" + userNickname + "/images/" + photo.getName();
+				File imageFile = new File(imagePath);
+				ImageIcon icon = new ImageIcon(ImageIO.read(imageFile));
+
+				JLabel photoLabel = new JLabel(icon);
+				panel.add(photoLabel);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		panel.revalidate();
 		panel.repaint();
-
 	}
 
 	private String getUserInfo(String userNickname) {

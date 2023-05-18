@@ -10,7 +10,7 @@ import gui.ProfilePage;
 import gui.LoginPage;
 
 
-public class Navigation {
+public class Navigation  extends JFrame {
     private JPanel cardPanel;
     private CardLayout cardLayout;
 
@@ -43,6 +43,16 @@ public class Navigation {
         frame.getContentPane().add(cardPanel, BorderLayout.CENTER);
         frame.setSize(414, 780);
         frame.setVisible(true);
+       
+    }
+    
+    public void init() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                Navigation navigation = new Navigation();
+                navigation.navigateToLoginPage();
+            }
+        });
     }
 
     public void navigateToLoginPage() {
@@ -59,12 +69,12 @@ public class Navigation {
     }
 
     
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 Navigation navigation = new Navigation();
                 navigation.navigateToLoginPage();
             }
         });
-    }
+    }*/
 }
