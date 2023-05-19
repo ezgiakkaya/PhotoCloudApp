@@ -1,6 +1,7 @@
 package gui;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,8 +9,13 @@ import java.util.HashMap;
 import java.io.ObjectOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 
 import models.DataLayer;
+import models.FreeTierUser;
+import models.HobbyistTierUser;
+import models.ProfessionalTierUser;
 import models.User;
 import gui.Navigation;
 
@@ -41,6 +47,11 @@ public class SignupPage extends JPanel {
 
 		JLabel emailLabel = new JLabel("Email:");
 		JTextField emailTextField = new JTextField(20);
+		
+		 JLabel tierLabel = new JLabel("Tier:");
+	        String[] tierOptions = { "Hobbyist", "Free", "Professional" };
+	        JComboBox<String> tierComboBox = new JComboBox<>(tierOptions);
+
 
 		// Create a signup button
 		JButton signupButton = new JButton("Signup");
@@ -56,6 +67,7 @@ public class SignupPage extends JPanel {
 				String surname = surnameTextField.getText();
 				String ageText = ageTextField.getText();
 				String email = emailTextField.getText();
+				String tier = (String) tierComboBox.getSelectedItem();
 
 				int age;
 				try {
@@ -64,8 +76,10 @@ public class SignupPage extends JPanel {
 					JOptionPane.showMessageDialog(SignupPage.this, "Invalid age input. Please enter a valid number.");
 					return;
 				}
+				
+				// tier = (String) tierComboBox.getSelectedItem();
 
-				boolean signupSuccessful = performSignup(nickname, password, name, surname, age, email);
+				boolean signupSuccessful = performSignup(nickname, password, name, surname, age, email, tier);
 
 				if (signupSuccessful) {
 					// Navigate to the user's profile page or Discover page
@@ -99,24 +113,30 @@ public class SignupPage extends JPanel {
 		add(emailTextField);
 		add(signupButton);
 		add(loginButton);
+		add(tierLabel);
+		add(tierComboBox);
 
 	}
 
 	private boolean performSignup(String nickname, String password, String name, String surname, int age,
-			String email) {
+			String email, String tier) {
 		HashMap<String, User> users = DataLayer.getUsers();
 
 		try {
 			// Perform signup validation logic
-			if (nickname.isEmpty() || password.isEmpty() || name.isEmpty() || surname.isEmpty() || email.isEmpty()) {
-				throw new IllegalArgumentException("Please fill in all the required fields.");
-			}
-
-			// Create a new User object and saves it 
-			if(!users.containsKey(nickname)) {
-				User user=new User(nickname, password,name,surname,age,email);
-				DataLayer.addUser(user);
-			}else {
+			 if (!users.containsKey(nickname)) {
+	                User user = null;
+	                if (tier.equals("Hobbyist")) {
+	                    user = new HobbyistTierUser(nickname, password, name, surname, age, email);
+	                    System.out.println("hobby user is created");
+	                  
+	                } else if (tier.equals("Free")) {
+	                    user = new FreeTierUser(nickname, password, name, surname, age, email);
+	                } else if (tier.equals("Professional")) {
+	                    user = new ProfessionalTierUser(nickname, password, name, surname, age, email);
+	                }
+	                DataLayer.addUser(user);
+	            }else {
 				throw new IllegalArgumentException("User already exists!");
 			}
 			//DataLayer.setCurrentuser(nickname);
