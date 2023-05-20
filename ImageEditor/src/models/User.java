@@ -28,6 +28,7 @@ public class User implements Serializable {
 			this.email = email;
 			this.profilePhoto = null;
 			createFolder();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

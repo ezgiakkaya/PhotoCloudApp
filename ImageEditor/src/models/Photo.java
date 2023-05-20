@@ -3,6 +3,7 @@ package models;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import filters.Filter;
 import utils.ImageMatrix;
@@ -14,6 +15,8 @@ public class Photo implements Serializable {
 	private List<Filter> appliedFilters;
 	private boolean isPrivate;
 	private int likes;
+	private int comments;
+	private List<String> commentsArray;
 	// private String filePath;
 	private String name;
 	//private static int id = 0;
@@ -35,7 +38,18 @@ public class Photo implements Serializable {
 	
 	public Photo(User owner) {
 		this.owner=owner;
+		this.isPrivate = true;
+		this.likes = 0;
+		this.comments = 0;
+		this.commentsArray = new ArrayList<>();
+        this.name = generateUUID();
+
 	}
+    private String generateUUID() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
+    }
+	
 
 	/*public Photo(User owner) {
 		id++;

@@ -59,9 +59,25 @@ public class FileChooser extends JFrame {
 
 					try {
 						// !	LOCALDEN FOTOYU KAYDETME .PNG 
-						Path sourcePath = Paths.get(selectedFilePath);
-						Path targetPath = Paths.get("resources/" + currentUser.getNickname() + "/images");
-						Files.createDirectories(targetPath.getParent());
+						
+						JOptionPane.showMessageDialog(FileChooser.this, "File copied successfully.");
+						Photo photo = new Photo(currentUser);
+						DataLayer.addPhoto(photo);
+						
+						Path sourcePath = Paths.get(selectedFilePath);						
+						
+						String fileName = sourcePath.getFileName().toString();
+						String fileExtension = "";
+
+						int i = fileName.lastIndexOf('.');
+						if (i >= 0) {
+						    fileExtension = fileName.substring(i+1);
+						}
+						Path targetPath = Paths.get("resources/" + currentUser.getNickname() +"/"+ photo.getName() +"." + fileExtension);
+						
+						
+						
+						//Files.createDirectories(targetPath.getParent());
 						Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
 						// Path newSourcePath = Paths.get(getParent().toString(), fullFileName);
 
@@ -69,9 +85,7 @@ public class FileChooser extends JFrame {
 						// "/images/" + Photo.generateName(extension));
 						// Files.move(newSourcePath, newTargetPath,
 						// StandardCopyOption.REPLACE_EXISTING);
-						JOptionPane.showMessageDialog(FileChooser.this, "File copied successfully.");
-						Photo photo = new Photo(currentUser);
-						DataLayer.addPhoto(photo);
+					
 					} catch (IOException ex) {
 						JOptionPane.showMessageDialog(FileChooser.this, "Failed to copy file: " + ex.getMessage());
 					}

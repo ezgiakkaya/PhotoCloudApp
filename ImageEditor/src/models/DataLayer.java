@@ -11,23 +11,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import java.util.ArrayList;
+
+import java.util.logging.Logger;
+
 public class DataLayer {
 	private static HashMap<String, User> users;
 	private static User currentuser;
 	private static final Logger logger = Logger.getLogger(DataLayer.class.getName());
 	private static HashMap<String, List<Photo>> photos;
 	private static String USER_DATA_FILE = "resources/user_data.txt";
-	private static String imagesFilePath="resources/images_data.txt";
+	private static String imagesFilePath = "resources/images_data.txt";
 
 	public static void init() {
 		loadUsersData();
 		loadImagesData();
-		
+
 	}
 
 	private static void loadUsersData() {
 		try {
-			
 
 			FileInputStream fileIn = new FileInputStream(USER_DATA_FILE);
 			ObjectInputStream os = new ObjectInputStream(fileIn);
@@ -37,6 +40,7 @@ public class DataLayer {
 				users = new HashMap<>();
 			}
 
+			// USERS VERİSİ KONTROL EDİLİYOR
 			for (Map.Entry<String, User> entry : users.entrySet()) {
 				String key = entry.getKey();
 				User value = entry.getValue();
@@ -44,7 +48,6 @@ public class DataLayer {
 			}
 
 			os.close();
-			
 
 		} catch (Exception e) {
 			System.out.println(e);
@@ -53,27 +56,45 @@ public class DataLayer {
 
 	private static void loadImagesData() {
 		try {
-			FileInputStream fis=new FileInputStream(imagesFilePath);
-			ObjectInputStream ois=new ObjectInputStream(fis);
-			photos=(HashMap<String,List<Photo>>) ois.readObject();
-			if(photos==null) {
-				photos=new HashMap<>();
+
+			FileInputStream fis = new FileInputStream(imagesFilePath);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			photos = (HashMap<String, List<Photo>>) ois.readObject();
+			
+			if (photos == null) {
+				System.out.println("photos null: ");
+				photos = new HashMap<>();
 			}
 			ois.close();
 			fis.close();
-		}catch(Exception e){
-			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 	}
+
 	public static void addPhoto(Photo photo) {
 		try {
-			FileOutputStream fos=new FileOutputStream(imagesFilePath);
-			ObjectOutputStream oos=new ObjectOutputStream(fos);
+			FileOutputStream fos = new FileOutputStream(imagesFilePath);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+
 			String nickname = photo.getOwner().getNickname();
-			List<Photo> photoList=photos.get(nickname);
-			photoList.add(photo);
-			oos.writeObject(photos);
+			
+			logger.info("nickname: " + nickname);
+			if (!photos.containsKey(nickname)) {
+				List<Photo> photoList = new ArrayList<>();
+				photoList.add(photo);
+				photos.put(nickname, photoList);
+				oos.writeObject(photos);// profile page için ekledim silebilirim
+			} else {
+				List<Photo> photoList = photos.get(nickname);
+				photoList.add(photo);
+				photos.put(nickname, photoList);
+				oos.writeObject(photos);// profile page için ekledim silebilirim
+			}
+
+		
+			fos.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -93,27 +114,20 @@ public class DataLayer {
 			users.remove(user.getNickname());
 		}
 	}
-	/*public static void saveUserData(String nickname) {
-		//HashMap<String, User> users = DataLayer.getUsers();
-		try (ObjectOutputStream outputStream = new ObjectOutputStream(
-				new FileOutputStream("resources/user_data.txt"))) {
-			outputStream.writeObject(users);
-		} catch (IOException e) {
-			System.err.println("Failed to save user data: " + e.getMessage());
-		}
-	}
-	
-	
-	public static void savePhotoData(String nickname) {
-		//HashMap<String, User> users = DataLayer.getUsers();
-		try (ObjectOutputStream outputStream = new ObjectOutputStream(
-				new FileOutputStream("resources/images_data.txt"))) {
-			outputStream.writeObject(photos);
-		} catch (IOException e) {
-			System.err.println("Failed to save photo data: " + e.getMessage());
-		}
-	}*/
-	
+	/*
+	 * public static void saveUserData(String nickname) { //HashMap<String, User>
+	 * users = DataLayer.getUsers(); try (ObjectOutputStream outputStream = new
+	 * ObjectOutputStream( new FileOutputStream("resources/user_data.txt"))) {
+	 * outputStream.writeObject(users); } catch (IOException e) {
+	 * System.err.println("Failed to save user data: " + e.getMessage()); } }
+	 * 
+	 * 
+	 * public static void savePhotoData(String nickname) { //HashMap<String, User>
+	 * users = DataLayer.getUsers(); try (ObjectOutputStream outputStream = new
+	 * ObjectOutputStream( new FileOutputStream("resources/images_data.txt"))) {
+	 * outputStream.writeObject(photos); } catch (IOException e) {
+	 * System.err.println("Failed to save photo data: " + e.getMessage()); } }
+	 */
 
 	public static HashMap<String, User> getUsers() {
 		return users;
@@ -133,10 +147,6 @@ public class DataLayer {
 		User user = users.get(nickname);
 		DataLayer.currentuser = user;
 	}
-
-	
-	
-	
 
 	public static HashMap<String, List<Photo>> getPhotos() {
 		return photos;
@@ -169,20 +179,16 @@ public class DataLayer {
 	public static void setCurrentuser(User currentuser) {
 		DataLayer.currentuser = currentuser;
 	}
-	
-/*
-	// SAVE USER PHOTO CLASS WITH IT'S KEY TO IMAGES.TXT
-	public static void saveUserPhoto(Photo photo, String key) {
-		HashMap<String, Photo> new_photo = new HashMap<String, Photo>();
-		new_photo.put(key, photo);
 
-		try (ObjectOutputStream outputStream = new ObjectOutputStream(
-				new FileOutputStream("resources/images_data.txt"))) {
-			outputStream.writeObject(new_photo);
-		} catch (IOException e) {
-			System.err.println("Failed to save user data: " + e.getMessage());
-		}
-	}
-	*/
+	/*
+	 * // SAVE USER PHOTO CLASS WITH IT'S KEY TO IMAGES.TXT public static void
+	 * saveUserPhoto(Photo photo, String key) { HashMap<String, Photo> new_photo =
+	 * new HashMap<String, Photo>(); new_photo.put(key, photo);
+	 * 
+	 * try (ObjectOutputStream outputStream = new ObjectOutputStream( new
+	 * FileOutputStream("resources/images_data.txt"))) {
+	 * outputStream.writeObject(new_photo); } catch (IOException e) {
+	 * System.err.println("Failed to save user data: " + e.getMessage()); } }
+	 */
 
 }

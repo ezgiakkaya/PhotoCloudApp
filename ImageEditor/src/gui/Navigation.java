@@ -45,7 +45,7 @@ public class Navigation  extends JFrame {
         
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(cardPanel, BorderLayout.CENTER);
-        frame.setSize(800, 780);
+        frame.setSize(600, 980);
         frame.setVisible(true);
        
     }
